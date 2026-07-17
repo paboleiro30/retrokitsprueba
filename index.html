@@ -678,8 +678,8 @@
       }
 
       .cart-item-thumb {
-        width: 224px; /* Modificado: Tamaño inicial aumentado 1.6x de 140px */
-        height: 224px; /* Modificado: Tamaño inicial aumentado 1.6x de 140px */
+        width: 224px; /* Tamaño inicial aumentado 1.6x de 140px */
+        height: 224px; /* Tamaño inicial aumentado 1.6x de 140px */
         border-radius: 18px;
         background: #0f1721;
         display: grid;
@@ -1114,6 +1114,175 @@
         .modal-content { grid-template-columns: 1fr; }
         .brand-logo-hero { height: 45px; top: 16px; right: 16px; }
       }
+
+      /* ==========================================
+         OPTIMIZACIÓN EXCLUSIVA PARA CELULARES
+         ========================================== */
+      @media (max-width: 480px) {
+        body {
+          padding: 180px 12px 24px !important;
+        }
+        
+        body.has-promo {
+          padding-top: 225px !important;
+        }
+
+        .promo-bar {
+          top: 126px !important;
+          font-size: 0.72rem;
+          padding: 6px 12px;
+        }
+
+        .site-header {
+          padding: 12px 12px !important;
+          gap: 10px !important;
+        }
+
+        .brand-text {
+          font-size: 1.4rem !important;
+        }
+
+        .main-nav {
+          gap: 12px !important;
+          font-size: 0.8rem !important;
+        }
+
+        .cart-action {
+          padding: 8px 16px !important;
+        }
+
+        .cart-action svg {
+          width: 18px;
+          height: 18px;
+        }
+
+        /* Hero sección optimizada */
+        .hero-section {
+          padding: 10px 0 20px !important;
+          gap: 24px !important;
+        }
+
+        .hero-copy h1 {
+          font-size: 2.6rem !important;
+          text-align: center;
+        }
+
+        .hero-copy p {
+          font-size: 0.9rem !important;
+          text-align: center;
+          margin: 16px 0 0;
+        }
+
+        .hero-buttons {
+          justify-content: center;
+          margin-top: 20px;
+        }
+
+        .btn {
+          padding: 12px 24px !important;
+          font-size: 0.85rem;
+        }
+
+        .feature-card {
+          min-height: auto !important;
+          padding: 20px !important;
+          border-radius: 24px !important;
+        }
+
+        .feature-meta h2 {
+          font-size: 1.6rem !important;
+        }
+
+        /* Buscador en bloque e inputs al 100% */
+        .catalog-search-inline {
+          width: 100%;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .catalog-search-inline input {
+          width: 100% !important;
+          min-width: 100% !important;
+        }
+
+        .catalog-search-inline .btn-search {
+          width: 100%;
+          text-align: center;
+        }
+
+        .catalog-header h2 {
+          font-size: 2rem !important;
+        }
+
+        .category-filter {
+          gap: 6px !important;
+        }
+
+        .category-btn {
+          padding: 8px 14px !important;
+          font-size: 0.78rem !important;
+        }
+
+        /* Ajustes de productos */
+        .product-card {
+          padding: 16px !important;
+          border-radius: 24px !important;
+        }
+
+        .product-image-wrap {
+          border-radius: 18px !important;
+          margin-bottom: 14px !important;
+        }
+
+        .product-card h3 {
+          font-size: 1.05rem !important;
+        }
+
+        /* Carrito Drawer Móvil */
+        .cart-drawer {
+          width: 100% !important;
+          right: -100%;
+        }
+
+        .cart-item-thumb {
+          width: 160px !important;
+          height: 160px !important;
+        }
+
+        /* Modales en teléfonos */
+        .product-modal {
+          width: calc(100% - 24px) !important;
+          border-radius: 20px !important;
+          max-height: 90vh;
+          overflow: hidden;
+        }
+
+        .modal-content {
+          padding: 24px 16px 20px !important;
+          gap: 20px !important;
+          max-height: calc(90vh - 40px);
+          overflow-y: auto;
+        }
+
+        .modal-image {
+          min-height: 280px !important;
+          border-radius: 20px !important;
+        }
+
+        .modal-details {
+          max-height: none !important;
+          padding-right: 0 !important;
+        }
+
+        .modal-details h2 {
+          font-size: 2rem !important;
+        }
+
+        .size-btn {
+          padding: 10px 16px !important;
+          font-size: 0.85rem !important;
+        }
+      }
     </style>
   </head>
   <body>
@@ -1338,7 +1507,7 @@
           renderProducts(products);
           initHeroCarousel();
         } catch (err) {
-          console.error("Error obteniendo productos de Supabase:", err.message);
+          console.error("Error obtuvo productos de Supabase:", err.message);
           showToast("Error al conectar con la base de datos.");
         }
       }
@@ -1350,20 +1519,18 @@
           return;
         }
 
-        // Ordenar los productos: los que tienen stock disponible van primero
         const sortedItems = [...items].sort((a, b) => {
           const aHasStock = a.stock && Object.values(a.stock).some(qty => qty > 0);
           const bHasStock = b.stock && Object.values(b.stock).some(qty => qty > 0);
           
-          if (aHasStock && !bHasStock) return -1; // 'a' va antes porque tiene stock
-          if (!aHasStock && bHasStock) return 1;  // 'b' va antes porque tiene stock
-          return 0;                               // se mantiene el orden original entre ellos
+          if (aHasStock && !bHasStock) return -1;
+          if (!aHasStock && bHasStock) return 1;
+          return 0;
         });
 
         sortedItems.forEach((product) => {
           const hasStock = product.stock && Object.values(product.stock).some(qty => qty > 0);
           
-          // Soporte para precio con descuento
           let priceHTML = '';
           if (product.discount_price && parseFloat(product.discount_price) > 0) {
             priceHTML = `
@@ -1450,7 +1617,6 @@
         document.getElementById('modalTitle').textContent = product.name;
         document.getElementById('modalDescription').textContent = product.description || 'Sin descripción disponible.';
         
-        // Manejo de precio con descuento en Modal
         const modalPriceElement = document.getElementById('modalPrice');
         if (product.discount_price && parseFloat(product.discount_price) > 0) {
           modalPriceElement.innerHTML = `
@@ -1594,7 +1760,6 @@
         const maxStock = selectedProduct.stock[selectedSize];
         const existing = cart.find(item => item.id === selectedProduct.id && item.size === selectedSize);
         
-        // El precio a cobrar considera el descuento si existe
         const finalPrice = (selectedProduct.discount_price && parseFloat(selectedProduct.discount_price) > 0) 
           ? parseFloat(selectedProduct.discount_price) 
           : parseFloat(selectedProduct.price);
@@ -1680,14 +1845,12 @@
         showToast("Carrito vaciado.");
       });
 
-      // MODIFICACIÓN: Acción de pedido vía Instagram con copia automática al portapapeles
       instagramOrderBtn.addEventListener('click', () => {
         if (cart.length === 0) {
           showToast("El carrito está vacío.");
           return;
         }
 
-        // Generar texto limpio del pedido para pegar
         let msg = `¡Hola! Me gustaría hacer un pedido de Retrokits:\n\n`;
         let total = 0;
         cart.forEach((item) => {
@@ -1696,7 +1859,6 @@
         });
         msg += `\n*Total a pagar: $${total}*`;
 
-        // Intentar copiar al portapapeles de manera inmediata
         navigator.clipboard.writeText(msg).then(() => {
           showToast("¡Pedido copiado! Pégalo en el chat.");
           setTimeout(() => {
@@ -1704,7 +1866,6 @@
           }, 1000);
         }).catch((err) => {
           console.error("Error al copiar texto: ", err);
-          // Fallback por si el navegador bloquea el portapapeles
           showToast("Abriendo Instagram de Retrokits...");
           window.open('https://www.instagram.com/retrokits.mx/', '_blank');
         });
