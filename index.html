@@ -1249,38 +1249,63 @@
           height: 160px !important;
         }
 
-        /* Modales en teléfonos */
+        /* Modales en teléfonos: Súper Phone Friendly */
         .product-modal {
-          width: calc(100% - 24px) !important;
-          border-radius: 20px !important;
-          max-height: 90vh;
-          overflow: hidden;
+          width: calc(100% - 16px) !important;
+          border-radius: 24px !important;
+          height: 85vh !important;
+          max-height: 85vh !important;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden !important;
         }
 
         .modal-content {
-          padding: 24px 16px 20px !important;
-          gap: 20px !important;
-          max-height: calc(90vh - 40px);
-          overflow-y: auto;
+          display: flex !important;
+          flex-direction: column !important;
+          padding: 0 !important;
+          height: 100% !important;
+          max-height: 100% !important;
+          overflow: hidden !important;
         }
 
         .modal-image {
-          min-height: 280px !important;
-          border-radius: 20px !important;
+          min-height: 250px !important;
+          height: 250px !important;
+          border-radius: 24px 24px 0 0 !important;
+          flex-shrink: 0;
         }
 
+        /* Contenedor escroleable que excluye el botón flotante */
         .modal-details {
+          flex: 1 !important;
+          overflow-y: auto !important;
+          padding: 20px 16px 85px !important; /* Espacio extra abajo para que el contenido no quede oculto bajo el botón */
           max-height: none !important;
-          padding-right: 0 !important;
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
         }
 
         .modal-details h2 {
-          font-size: 2rem !important;
+          font-size: 1.8rem !important;
         }
 
         .size-btn {
           padding: 10px 16px !important;
           font-size: 0.85rem !important;
+        }
+
+        /* Fijar Botón del Carrito en Móviles */
+        #addToCartModal {
+          position: absolute !important;
+          bottom: 16px !important;
+          left: 16px !important;
+          right: 16px !important;
+          width: calc(100% - 32px) !important;
+          margin: 0 !important;
+          z-index: 10 !important;
+          box-shadow: 0 10px 30px rgba(13, 19, 26, 0.95);
         }
       }
     </style>
@@ -1413,7 +1438,7 @@
               <span>Talla</span>
               <div class="size-options" id="sizeOptionsContainer"></div>
             </div>
-            <button class="btn btn-primary" id="addToCartModal" style="margin-top: 20px;">AÑADIR AL CARRITO</button>
+            <button class="btn btn-primary" id="addToCartModal">AÑADIR AL CARRITO</button>
           </div>
         </div>
       </div>
@@ -1845,6 +1870,7 @@
         showToast("Carrito vaciado.");
       });
 
+      // Flujo de redirección optimizado para evitar bloqueos del navegador en teléfonos
       instagramOrderBtn.addEventListener('click', () => {
         if (cart.length === 0) {
           showToast("El carrito está vacío.");
@@ -1859,16 +1885,35 @@
         });
         msg += `\n*Total a pagar: $${total}*`;
 
-        navigator.clipboard.writeText(msg).then(() => {
-          showToast("¡Pedido copiado! Pégalo en el chat.");
-          setTimeout(() => {
-            window.open('https://www.instagram.com/retrokits.mx/', '_blank');
-          }, 1000);
-        }).catch((err) => {
-          console.error("Error al copiar texto: ", err);
-          showToast("Abriendo Instagram de Retrokits...");
-          window.open('https://www.instagram.com/retrokits.mx/', '_blank');
-        });
+        // 1. Abrimos de inmediato la ventana o app para evitar que el navegador móvil bloquee el popup
+        const instagramWindow = window.open('https://www.instagram.com/retrokits.mx/', '_blank');
+
+        // 2. Copiamos el pedido al portapapeles en segundo plano
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(msg)
+            .then(() => {
+              showToast("¡Pedido copiado! Pégalo en el chat de Instagram.");
+            })
+            .catch((err) => {
+              console.error("Error al copiar texto: ", err);
+              showToast("Abriendo Instagram...");
+            });
+        } else {
+          // Fallback clásico para navegadores antiguos de móvil
+          const textArea = document.createElement("textarea");
+          textArea.value = msg;
+          textArea.style.position = "fixed"; 
+          document.body.appendChild(textArea);
+          textArea.focus();
+          textArea.select();
+          try {
+            document.execCommand('copy');
+            showToast("¡Pedido copiado! Pégalo en el chat.");
+          } catch (err) {
+            console.error('No se pudo copiar de forma clásica', err);
+          }
+          document.body.removeChild(textArea);
+        }
       });
 
       cartButton.addEventListener('click', () => cartDrawer.classList.add('open'));
