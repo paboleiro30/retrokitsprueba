@@ -31,9 +31,6 @@
         scroll-behavior: smooth;
       }
 
-      /* ==========================================================================
-         FONDO CANVAS WEBGL (CÁUSTICO NEÓN)
-         ========================================================================== */
       #causticsCanvas {
         position: fixed;
         top: 0;
@@ -59,8 +56,17 @@
         padding-top: 140px;
       }
 
-      button {
+      /* OPTIMIZACIÓN GLOBAL DE INTERACCIÓN SIN DELAY EN CLICK Y HOVER */
+      button, select, input, a, .brand-block, .cart-action, .btn, .size-btn, .category-select, .btn-search {
         font: inherit;
+        touch-action: manipulation; /* Elimina los 300ms de delay en dispositivos táctiles */
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      /* Feedback instantáneo al hacer click (:active) sin perder la transición suave */
+      button:active, select:active, a:active, .btn:active, .brand-block:active {
+        transition: transform 0.05s ease, background 0.05s ease, border-color 0.05s ease !important;
+        transform: scale(0.97) !important;
       }
 
       .app-shell {
@@ -94,7 +100,6 @@
         width: 100%;
       }
 
-      /* Barra de Promo Dinámica */
       .promo-bar {
         width: 100%;
         background: var(--accent);
@@ -107,7 +112,7 @@
         text-transform: uppercase;
         box-shadow: 0 4px 20px rgba(212, 175, 55, 0.25);
         display: none;
-        animation: slideDown 0.4s ease forwards;
+        animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
 
       @keyframes slideDown {
@@ -119,12 +124,17 @@
         display: inline-flex;
         align-items: center;
         gap: 18px;
+        text-decoration: none;
+        cursor: pointer;
+        will-change: transform;
       }
 
       .brand-logo-header {
         height: 65px;
         width: auto;
         object-fit: contain;
+        transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), filter 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: transform, filter;
       }
 
       .brand-text {
@@ -134,10 +144,23 @@
         letter-spacing: 0.03em;
         text-transform: uppercase;
         color: var(--text);
+        transition: color 0.15s cubic-bezier(0.16, 1, 0.3, 1), text-shadow 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: color, text-shadow;
       }
 
       .brand-text span {
         color: var(--accent);
+        transition: opacity 0.15s ease;
+      }
+
+      .brand-block:hover .brand-logo-header {
+        transform: translate3d(0, -2px, 0) scale(1.05);
+        filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.4));
+      }
+
+      .brand-block:hover .brand-text {
+        color: var(--accent);
+        text-shadow: 0 0 16px rgba(212, 175, 55, 0.3);
       }
 
       .actions-panel {
@@ -163,12 +186,14 @@
         font-size: 0.95rem;
         position: relative;
         text-decoration: none;
-        transition: all 0.2s ease;
+        transition: background 0.15s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.15s cubic-bezier(0.16, 1, 0.3, 1), transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: transform, background, border-color;
       }
 
       .cart-action:hover {
         background: rgba(212, 175, 55, 0.15);
         border-color: var(--accent);
+        transform: translate3d(0, -1px, 0);
       }
 
       .cart-action svg {
@@ -251,15 +276,16 @@
         text-transform: uppercase;
         border-radius: 999px;
         cursor: pointer;
-        transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+        transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), background 0.15s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s cubic-bezier(0.16, 1, 0.3, 1);
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        will-change: transform, background, border-color, box-shadow;
       }
 
       .btn:hover {
-        transform: translateY(-2px);
+        transform: translate3d(0, -2px, 0);
         background: rgba(212, 175, 55, 0.15);
         border-color: var(--accent);
       }
@@ -301,11 +327,7 @@
         z-index: 5;
         opacity: 0.85;
         filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
-        transition: opacity 0.3s ease;
-      }
-      
-      .brand-logo-hero:hover {
-        opacity: 1;
+        transition: opacity 0.2s ease;
       }
 
       .jersey-frame {
@@ -330,7 +352,7 @@
         z-index: 1;
         opacity: 0;
         transform: scale(0.95);
-        transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       }
 
       .jersey-hero-img.active {
@@ -340,12 +362,12 @@
 
       .feature-meta {
         margin-top: 4px;
-        transition: opacity 0.4s ease, transform 0.4s ease;
+        transition: opacity 0.25s ease, transform 0.25s ease;
       }
 
       .feature-meta.fade-out {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translate3d(0, 10px, 0);
       }
 
       .feature-label {
@@ -395,34 +417,74 @@
         white-space: nowrap;
       }
 
-      .category-filter {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-        flex: 1;
+      .catalog-header-title a {
+        color: inherit;
+        text-decoration: none;
+        transition: color 0.15s ease, text-shadow 0.15s ease;
       }
 
-      .category-btn {
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        background: rgba(255, 255, 255, 0.02);
-        color: var(--muted);
-        padding: 10px 18px;
+      .catalog-header-title a:hover {
+        color: var(--accent);
+        text-shadow: 0 0 16px rgba(212, 175, 55, 0.3);
+      }
+
+      .custom-select-wrapper {
+        position: relative;
+        display: inline-block;
+        min-width: 220px;
+      }
+
+      .category-select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        width: 100%;
+        padding: 12px 42px 12px 20px;
         border-radius: 999px;
-        cursor: pointer;
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        background: rgba(10, 19, 34, 0.75);
+        color: var(--text);
         font-weight: 600;
+        font-size: 0.88rem;
         letter-spacing: 0.08em;
-        font-size: 0.85rem;
-        transition: all 0.2s ease;
+        text-transform: uppercase;
+        cursor: pointer;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        outline: none;
+        transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        will-change: transform, background, border-color, box-shadow;
       }
 
-      .category-btn.active,
-      .category-btn:hover {
+      .category-select:hover, .category-select:focus {
         border-color: var(--accent);
-        color: var(--text);
         background: rgba(212, 175, 55, 0.12);
-        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.1);
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        transform: translate3d(0, -1px, 0);
+      }
+
+      .category-select option {
+        background: #0a1322;
+        color: var(--text);
+        padding: 12px;
+        font-weight: 500;
+        text-transform: none;
+      }
+
+      .custom-select-wrapper::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: 18px;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 6px solid var(--accent);
+        pointer-events: none;
+        transition: transform 0.15s ease;
       }
 
       .catalog-search-inline {
@@ -440,7 +502,7 @@
         border-radius: 999px;
         outline: none;
         font-size: 0.9rem;
-        transition: border-color 0.2s ease;
+        transition: border-color 0.15s ease;
       }
 
       .catalog-search-inline input:focus {
@@ -458,19 +520,56 @@
         font-weight: 600;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        transition: background 0.2s ease;
+        transition: background 0.15s ease, transform 0.15s ease;
+        will-change: transform, background;
       }
 
       .catalog-search-inline .btn-search:hover {
         background: rgba(212, 175, 55, 0.2);
+        transform: translate3d(0, -1px, 0);
       }
 
-      /* GRID PRODUCTOS */
+      /* GRID PRODUCTOS Y SPINNER DE CARGA */
       .product-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
         gap: 24px;
         width: 100%;
+        min-height: 250px;
+      }
+
+      /* ESTILOS DEL CIRCULITO DE CARGA */
+      .loading-container {
+        grid-column: 1 / -1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 0;
+        gap: 16px;
+      }
+
+      .spinner {
+        width: 48px;
+        height: 48px;
+        border: 4px solid rgba(212, 175, 55, 0.15);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .loading-text {
+        color: var(--muted);
+        font-size: 0.9rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        font-weight: 600;
       }
 
       .product-card {
@@ -483,15 +582,15 @@
         overflow: hidden;
         padding: 28px;
         box-shadow: 0 38px 80px rgba(0, 0, 0, 0.4);
-        transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-        will-change: transform;
+        transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: transform, border-color, box-shadow;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
       }
 
       .product-card:hover {
-        transform: translateY(-6px);
+        transform: translate3d(0, -6px, 0);
         border-color: rgba(212, 175, 55, 0.4);
         box-shadow: 0 45px 90px rgba(0, 0, 0, 0.5), 0 0 30px rgba(212, 175, 55, 0.1);
       }
@@ -568,7 +667,7 @@
         border-radius: 22px;
       }
 
-      /* SECCIÓN FOOTER / PIE DE PÁGINA */
+      /* FOOTER / PIE DE PÁGINA CON SECCIÓN DE CÓDIGO PROMO */
       .site-footer {
         margin-top: 100px;
         padding: 60px 0 30px;
@@ -578,8 +677,8 @@
 
       .footer-grid {
         display: grid;
-        grid-template-columns: 1.5fr 1fr 1fr;
-        gap: 40px;
+        grid-template-columns: 1.2fr 0.8fr 0.8fr 1.2fr;
+        gap: 32px;
       }
 
       .footer-brand {
@@ -636,16 +735,100 @@
         color: var(--muted);
         text-decoration: none;
         font-size: 0.9rem;
-        transition: color 0.2s ease, transform 0.2s ease;
+        transition: color 0.15s ease, transform 0.15s ease;
         display: inline-block;
+        will-change: transform, color;
       }
 
       .footer-links a:hover {
         color: var(--text);
-        transform: translateX(4px);
+        transform: translate3d(4px, 0, 0);
       }
 
-      /* ELEMENTOS DEL CARRITO Y MODALES */
+      /* BOX CÓDIGO PROMO FOOTER */
+      .footer-promo-box {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px dashed rgba(212, 175, 55, 0.3);
+        border-radius: 20px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .footer-promo-box p {
+        margin: 0;
+        font-size: 0.85rem;
+        color: var(--muted);
+        line-height: 1.4;
+      }
+
+      .footer-promo-form {
+        display: flex;
+        gap: 8px;
+      }
+
+      .footer-promo-input {
+        flex: 1;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 999px;
+        padding: 10px 16px;
+        color: var(--text);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        outline: none;
+        transition: border-color 0.15s ease;
+      }
+
+      .footer-promo-input:focus {
+        border-color: var(--accent);
+      }
+
+      .footer-promo-btn {
+        background: var(--accent);
+        color: #0d131a;
+        border: none;
+        border-radius: 999px;
+        padding: 10px 18px;
+        font-weight: 700;
+        font-size: 0.8rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: opacity 0.15s ease, transform 0.15s ease;
+        will-change: transform, opacity;
+      }
+
+      .footer-promo-btn:hover {
+        opacity: 0.9;
+        transform: translate3d(0, -1px, 0);
+      }
+
+      .promo-applied-tag {
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(46, 196, 182, 0.15);
+        border: 1px solid var(--success);
+        color: var(--success);
+        border-radius: 12px;
+        padding: 8px 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+
+      .remove-promo-btn {
+        background: transparent;
+        border: none;
+        color: #ef4444;
+        cursor: pointer;
+        font-size: 1rem;
+        line-height: 1;
+        padding: 0 4px;
+      }
+
+      /* CARRITO & MODALES */
       .cart-drawer {
         position: fixed;
         top: 0;
@@ -662,7 +845,8 @@
         flex-direction: column;
         justify-content: space-between;
         z-index: 1010;
-        transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: right 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: right;
       }
 
       .cart-drawer.open {
@@ -698,11 +882,11 @@
         padding: 6px 12px;
         border-radius: 999px;
         border: 1px solid rgba(255, 255, 255, 0.05);
-        transition: all 0.2s ease;
+        transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
       }
 
       .close-drawer svg {
-        transition: transform 0.2s ease;
+        transition: transform 0.15s ease;
       }
 
       .close-drawer:hover svg {
@@ -741,6 +925,7 @@
         border: 1px solid rgba(255, 255, 255, 0.05);
         border-radius: 22px;
         flex-shrink: 0;
+        position: relative;
       }
 
       .cart-item-thumb {
@@ -748,15 +933,20 @@
         height: 224px; 
         border-radius: 18px;
         background: #0f1721;
-        display: grid;
-        place-items: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         overflow: hidden;
+        padding: 8px;
       }
 
       .cart-item-thumb img {
+        max-width: 100%;
+        max-height: 100%;
         width: 100%;
         height: 100%;
         object-fit: cover;
+        object-position: center;
       }
 
       .cart-item-info {
@@ -775,6 +965,13 @@
         color: var(--muted);
       }
 
+      .item-discount-badge {
+        font-size: 0.75rem;
+        color: var(--success);
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
       .cart-footer-block {
         border-top: 1px solid rgba(255, 255, 255, 0.08);
         padding-top: 20px;
@@ -784,25 +981,34 @@
 
       .cart-summary {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 1.2rem;
-        color: var(--text);
+        flex-direction: column;
+        gap: 8px;
         margin-bottom: 20px;
         padding: 0 4px;
       }
 
-      .cart-summary span {
+      .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .summary-row span {
         font-family: 'Oswald', sans-serif;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        font-size: 1rem;
+        font-size: 0.9rem;
         color: var(--muted);
       }
 
-      .cart-summary strong {
+      .summary-row strong {
         font-family: 'Oswald', sans-serif;
-        font-size: 1.45rem;
+        font-size: 1.2rem;
+        color: var(--text);
+      }
+
+      .summary-row.total-row strong {
+        font-size: 1.5rem;
         color: var(--accent);
       }
 
@@ -828,8 +1034,9 @@
         align-items: center !important;
         justify-content: center !important;
         margin: 0 !important;
-        transition: all 0.25s ease !important;
+        transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease !important;
         box-sizing: border-box !important;
+        will-change: transform, background, box-shadow;
       }
 
       #clearCart {
@@ -860,7 +1067,7 @@
       }
 
       .btn-instagram:hover {
-        transform: translateY(-2px);
+        transform: translate3d(0, -2px, 0);
         box-shadow: 0 10px 28px rgba(214, 36, 159, 0.45) !important;
         filter: brightness(1.08);
       }
@@ -879,6 +1086,12 @@
         padding: 6px 12px;
         cursor: pointer;
         min-width: 32px;
+        transition: background 0.15s ease, border-color 0.15s ease;
+      }
+
+      .qty-btn:hover {
+        background: rgba(212, 175, 55, 0.2);
+        border-color: var(--accent);
       }
 
       .qty-value {
@@ -894,7 +1107,8 @@
         z-index: 1000;
         opacity: 0;
         pointer-events: none;
-        transition: opacity 0.25s ease;
+        transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity;
       }
 
       .modal-backdrop.visible {
@@ -909,7 +1123,7 @@
         left: 50%;
         width: min(1350px, calc(100% - 32px));
         height: min(92vh, 850px);
-        transform: translate(-50%, -50%) scale(0.93);
+        transform: translate3d(-50%, -50%, 0) scale(0.95);
         background: rgba(3, 8, 20, 0.96);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
@@ -919,7 +1133,8 @@
         z-index: 1005;
         opacity: 0;
         pointer-events: none;
-        transition: opacity 0.25s ease, transform 0.25s ease;
+        transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity, transform;
         display: flex;
         flex-direction: column;
       }
@@ -949,7 +1164,8 @@
         padding: 14px 20px;
         border-radius: 999px;
         cursor: pointer;
-        transition: background 0.2s ease, border-color 0.2s ease;
+        transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+        will-change: transform, background, border-color;
       }
 
       .size-btn.active,
@@ -957,6 +1173,7 @@
         background: rgba(212, 175, 55, 0.14);
         border-color: var(--accent);
         color: var(--text);
+        transform: translate3d(0, -1px, 0);
       }
 
       .size-btn.no-stock {
@@ -965,12 +1182,13 @@
         cursor: not-allowed;
         background: rgba(0, 0, 0, 0.4);
         border-color: rgba(255, 255, 255, 0.05);
+        transform: none !important;
       }
 
       .product-modal.visible {
         opacity: 1;
         pointer-events: auto;
-        transform: translate(-50%, -50%) scale(1);
+        transform: translate3d(-50%, -50%, 0) scale(1);
       }
 
       .modal-close {
@@ -983,6 +1201,11 @@
         font-size: 2.2rem;
         cursor: pointer;
         z-index: 5;
+        transition: transform 0.15s ease;
+      }
+
+      .modal-close:hover {
+        transform: scale(1.1);
       }
 
       .modal-content {
@@ -1012,7 +1235,7 @@
         object-fit: cover;
         object-position: center;
         opacity: 1;
-        transition: opacity 0.25s ease-in-out;
+        transition: opacity 0.15s ease-in-out;
         will-change: opacity;
       }
 
@@ -1035,9 +1258,10 @@
         align-items: center;
         justify-content: center;
         font-size: 1.25rem;
-        transition: all 0.2s ease;
+        transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
         z-index: 10;
         user-select: none;
+        will-change: transform, background, box-shadow;
       }
 
       .modal-arrow:hover {
@@ -1045,6 +1269,7 @@
         border-color: var(--accent);
         color: #0d131a;
         box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        transform: translateY(-50%) scale(1.08);
       }
 
       .modal-arrow.prev {
@@ -1070,7 +1295,7 @@
         height: 8px;
         border-radius: 50%;
         background: rgba(255, 255, 255, 0.3);
-        transition: background 0.2s;
+        transition: background 0.15s ease;
       }
 
       .modal-dot.active {
@@ -1176,12 +1401,12 @@
         border-radius: 18px;
         color: var(--text);
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        animation: toastIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        animation: toastIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       }
 
       @keyframes toastIn {
-        from { transform: translateY(30px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
+        from { transform: translate3d(0, 30px, 0); opacity: 0; }
+        to { transform: translate3d(0, 0, 0); opacity: 1; }
       }
 
       /* MEDIA QUERIES OPTIMIZADAS */
@@ -1300,13 +1525,8 @@
           font-size: 2rem !important;
         }
 
-        .category-filter {
-          gap: 6px !important;
-        }
-
-        .category-btn {
-          padding: 8px 14px !important;
-          font-size: 0.78rem !important;
+        .custom-select-wrapper {
+          width: 100%;
         }
 
         .product-grid {
@@ -1366,7 +1586,7 @@
         .modal-details {
           flex: 1 !important;
           overflow-y: auto !important;
-          padding: 20px 16px 85px !important; 
+          padding: 20px 16px 20px !important; 
           max-height: none !important;
           display: flex;
           flex-direction: column;
@@ -1383,13 +1603,13 @@
         }
 
         #addToCartModal {
-          position: absolute !important;
-          bottom: 16px !important;
-          left: 16px !important;
-          right: 16px !important;
-          width: calc(100% - 32px) !important;
-          margin: 0 !important;
-          z-index: 10 !important;
+          position: relative !important;
+          bottom: auto !important;
+          left: auto !important;
+          right: auto !important;
+          width: 100% !important;
+          margin-top: 10px !important;
+          z-index: 1 !important;
           box-shadow: 0 10px 30px rgba(13, 19, 26, 0.95);
         }
       }
@@ -1403,10 +1623,10 @@
     <header class="site-header-wrapper">
       <div class="promo-bar" id="promoBar"></div>
       <nav class="site-header">
-        <div class="brand-block">
+        <a href="#" class="brand-block">
           <img class="brand-logo-header" src="https://ltbpwogtmgxkherijdrg.supabase.co/storage/v1/object/public/Misc/retrokitslogo.png" alt="RetroKits Logo" />
           <span class="brand-text">RETRO<span>KITS</span></span>
-        </div>
+        </a>
         <div class="actions-panel">
           <button class="cart-action" type="button" id="cartButton">
             <svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-13L4 3H1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1423,9 +1643,9 @@
             <div class="hero-copy">
               <h1>LA <span class="accent">PASIÓN</span> SE VISTE.</h1>
               <div class="eyebrow" style="margin-top: 10px; margin-bottom: 24px;">RETRO KITS EDITION</div>
-              <p>Descubre camisetas premium de colección, con corte impecable y presencia editorial en cada pieza.</p>
+              <p>Las jerseys que marcaron los momentos más grandes del fútbol, hechas para quienes siguen viviendo cada partido con la misma pasión de siempre.</p>
               <div class="hero-buttons">
-                <button class="btn btn-primary" onclick="document.getElementById('catalogHeaderRow').scrollIntoView({behavior: 'smooth'})">VER COLECCIÓN</button>
+                <a class="btn btn-primary" href="#coleccion" onclick="scrollToCollection(event)">VER COLECCIÓN</a>
               </div>
             </div>
             <div class="hero-visual">
@@ -1448,16 +1668,19 @@
             <div class="catalog-grid" id="catalogHeaderRow">
               <div class="catalog-title-row">
                 <div class="catalog-header-title">
-                  <h2>COLECCIÓN</h2>
+                  <h2><a href="javascript:void(0)" onclick="resetToAllCategories();">COLECCIÓN</a></h2>
                 </div>
                 
-                <div class="category-filter">
-                  <button class="category-btn active" data-category="Todas">Todas</button>
-                  <button class="category-btn" data-category="LaLiga">LaLiga</button>
-                  <button class="category-btn" data-category="Premier League">Premier League</button>
-                  <button class="category-btn" data-category="Serie A">Serie A</button>
-                  <button class="category-btn" data-category="Selecciones">Selecciones</button>
-                  <button class="category-btn" data-category="Otras Ligas">Otras Ligas</button>
+                <!-- DROPDOWN DE CATEGORÍAS ESTILIZADO -->
+                <div class="custom-select-wrapper">
+                  <select id="categorySelect" class="category-select">
+                    <option value="Todas">Todas las Categorías</option>
+                    <option value="LaLiga">LaLiga</option>
+                    <option value="Premier League">Premier League</option>
+                    <option value="Serie A">Serie A</option>
+                    <option value="Selecciones">Selecciones</option>
+                    <option value="Otras Ligas">Otras Ligas</option>
+                  </select>
                 </div>
 
                 <div class="catalog-search-inline">
@@ -1467,7 +1690,13 @@
               </div>
             </div>
             
-            <div class="product-grid" id="productGrid"></div>
+            <div class="product-grid" id="productGrid">
+              <!-- SPINNER INDICADOR DE CARGA INICIAL -->
+              <div class="loading-container" id="loadingSpinner">
+                <div class="spinner"></div>
+                <span class="loading-text">Cargando camisetas...</span>
+              </div>
+            </div>
           </section>
         </main>
       </div>
@@ -1488,7 +1717,7 @@
             <h4>Navegación</h4>
             <ul class="footer-links">
               <li><a href="#storeView">Inicio</a></li>
-              <li><a href="#coleccion">Colección Completa</a></li>
+              <li><a href="#coleccion" onclick="scrollToCollection(event); resetToAllCategories();">Colección Completa</a></li>
               <li><a href="#" id="cartFooterLink" onclick="document.getElementById('cartDrawer').classList.add('open'); return false;">Ver Carrito</a></li>
             </ul>
           </div>
@@ -1502,11 +1731,33 @@
             </ul>
           </div>
 
+          <!-- SECCIÓN DE CÓDIGO DE PROMOCIÓN EN EL FOOTER -->
+          <div class="footer-column">
+            <h4>¿Tienes un Cupón?</h4>
+            <div class="footer-promo-box">
+              <p>Ingresa tu código promocional para obtener un descuento exclusivo en tu compra.</p>
+              
+              <div id="promoFormContainer">
+                <form class="footer-promo-form" id="footerPromoForm" onsubmit="applyPromoCode(event)">
+                  <input type="text" id="promoCodeInput" class="footer-promo-input" placeholder="CÓDIGO DE PROMO" required />
+                  <button type="submit" class="footer-promo-btn">Aplicar</button>
+                </form>
+              </div>
+
+              <div id="promoAppliedContainer" style="display: none;">
+                <div class="promo-applied-tag">
+                  <span id="promoAppliedText">Código Aplicado</span>
+                  <button class="remove-promo-btn" onclick="removePromoCode()" title="Quitar descuento">×</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </footer>
     </div>
 
-    <!-- PANELES Y MODALES FUERA DE CONTENEDORES PARA EVITAR CONFLICTOS DE Z-INDEX -->
+    <!-- PANELES Y MODALES -->
     <aside class="cart-drawer" id="cartDrawer">
       <div class="cart-header">
         <h3>Carrito</h3>
@@ -1517,8 +1768,18 @@
       <div class="cart-items" id="cartItems"></div>
       <div class="cart-footer-block">
         <div class="cart-summary">
-          <span>Total</span>
-          <strong id="cartTotal">$0</strong>
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <strong id="cartSubtotal">$0</strong>
+          </div>
+          <div class="summary-row" id="discountRow" style="display: none; color: var(--success);">
+            <span style="color: var(--success);">Descuento</span>
+            <strong id="cartDiscount" style="color: var(--success);">-$0</strong>
+          </div>
+          <div class="summary-row total-row" style="margin-top: 6px;">
+            <span>Total</span>
+            <strong id="cartTotal">$0</strong>
+          </div>
         </div>
         <div class="cart-actions">
           <button id="clearCart" type="button">Limpiar carrito</button>
@@ -1733,6 +1994,7 @@
       let selectedProduct = null;
       let selectedSize = '';
       const cart = [];
+      let activePromoCode = null;
 
       let modalImagesList = [];
       let currentModalImgIndex = 0;
@@ -1746,6 +2008,9 @@
       const cartDrawer = document.getElementById('cartDrawer');
       const closeCart = document.getElementById('closeCart');
       const cartItems = document.getElementById('cartItems');
+      const cartSubtotal = document.getElementById('cartSubtotal');
+      const cartDiscount = document.getElementById('cartDiscount');
+      const discountRow = document.getElementById('discountRow');
       const cartTotal = document.getElementById('cartTotal');
       const cartCount = document.getElementById('cartCount');
       const clearCartBtn = document.getElementById('clearCart');
@@ -1753,6 +2018,7 @@
       
       const searchInput = document.getElementById('searchInput');
       const searchSubmit = document.getElementById('searchSubmit');
+      const categorySelect = document.getElementById('categorySelect');
 
       const productModal = document.getElementById('productModal');
       const modalBackdrop = document.getElementById('modalBackdrop');
@@ -1776,6 +2042,45 @@
       heroImage.addEventListener('error', function() {
         this.src = fallbackPlaceholder;
       });
+
+      function scrollToCollection(event) {
+        if (event) event.preventDefault();
+        const target = document.getElementById('catalogHeaderRow');
+        if (!target) return;
+
+        const header = document.querySelector('.site-header-wrapper');
+        const headerOffset = header ? header.offsetHeight + 15 : 120;
+        
+        const targetY = target.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+        const startY = window.pageYOffset;
+        const distance = targetY - startY;
+        const duration = 500; // Duración suavizada y rápida
+        let start = null;
+
+        function cubicEasing(t) {
+          return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        }
+
+        function step(timestamp) {
+          if (!start) start = timestamp;
+          const progress = Math.min((timestamp - start) / duration, 1);
+          const ease = cubicEasing(progress);
+          
+          window.scrollTo(0, startY + distance * ease);
+
+          if (progress < 1) {
+            window.requestAnimationFrame(step);
+          }
+        }
+
+        window.requestAnimationFrame(step);
+      }
+
+      function resetToAllCategories() {
+        categorySelect.value = 'Todas';
+        searchInput.value = '';
+        renderProducts(products);
+      }
 
       async function loadPromoFromSupabase() {
         try {
@@ -1814,7 +2119,96 @@
         } catch (err) {
           console.error("Error obtuvo productos de Supabase:", err.message);
           showToast("Error al conectar con la base de datos.");
+          productGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #ef4444; padding: 40px 0;">Error al cargar las camisetas.</p>`;
         }
+      }
+
+      function getPromoDiscountValues(promoCode) {
+        if (!promoCode) {
+          return { code: '', discType: '', discValue: 0 };
+        }
+
+        const discValue = Number(promoCode.discount_value ?? 0);
+
+        return {
+          code: promoCode.code || '',
+          discType: promoCode.discount_type || '',
+          discValue: Number.isFinite(discValue) ? discValue : 0
+        };
+      }
+
+      async function applyPromoCode(event) {
+        event.preventDefault();
+        
+        const codeInput = document.getElementById('promoCodeInput');
+        const codeVal = codeInput.value.trim().toUpperCase();
+
+        if (!codeVal) return;
+
+        try {
+          const { data, error } = await supabaseClient
+            .from('promo_codes')
+            .select('id, code, product_id, discount_type, discount_value')
+            .ilike('code', codeVal)
+            .maybeSingle();
+
+          if (error) {
+            console.error("Error al consultar promo_codes:", error);
+            showToast("Error de conexión al validar el código.");
+            return;
+          }
+
+          if (!data) {
+            showToast("Código promocional no válido.");
+            return;
+          }
+
+          if (data.product_id) {
+            const targetProductId = String(data.product_id).toLowerCase();
+            const productoEnCarrito = cart.find(item => String(item.id).toLowerCase() === targetProductId);
+
+            if (!productoEnCarrito) {
+              showToast("Este código no aplica a los productos de tu carrito.");
+              return;
+            }
+
+            if (productoEnCarrito.quantity > 1) {
+              productoEnCarrito.quantity = 1;
+              showToast("El código solo aplica a 1 jersey. Se ajustó la cantidad.");
+            }
+          }
+
+          activePromoCode = data;
+          
+          document.getElementById('promoFormContainer').style.display = 'none';
+          document.getElementById('promoAppliedContainer').style.display = 'block';
+
+          const { code, discType, discValue } = getPromoDiscountValues(data);
+          const isPercent = discType === 'percentage';
+          let promoLabel = `${code} (` + (isPercent ? `${discValue}% OFF` : `$${discValue} OFF`) + `)`;
+          
+          if (data.product_id) {
+            promoLabel += ` [Válido para 1 jersey]`;
+          }
+
+          document.getElementById('promoAppliedText').textContent = promoLabel;
+
+          showToast("¡Código de promoción aplicado!");
+          updateCartUI();
+          codeInput.value = '';
+
+        } catch (err) {
+          console.error("Error inesperado:", err);
+          showToast("Ocurrió un error al procesar el código.");
+        }
+      }
+
+      function removePromoCode() {
+        activePromoCode = null;
+        document.getElementById('promoFormContainer').style.display = 'block';
+        document.getElementById('promoAppliedContainer').style.display = 'none';
+        showToast("Código promocional retirado.");
+        updateCartUI();
       }
 
       function renderProducts(items) {
@@ -1898,7 +2292,7 @@
             updateHeroFeature(nextProduct);
             heroImage.classList.add('active');
             heroMeta.classList.remove('fade-out');
-          }, 300);
+          }, 200);
         }, 8000);
       }
 
@@ -2047,7 +2441,7 @@
             modalProductImg.classList.remove('fade-out');
           };
           tempImg.src = nextSrc;
-        }, 250);
+        }, 150);
       }
 
       modalPrevBtn.addEventListener('click', (e) => {
@@ -2086,9 +2480,16 @@
       addToCartModalBtn.addEventListener('click', () => {
         if (!selectedProduct || !selectedSize) return;
 
-        const maxStock = selectedProduct.stock[selectedSize];
+        const maxStock = (selectedProduct.stock && selectedProduct.stock[selectedSize]) ? selectedProduct.stock[selectedSize] : 99;
         const existing = cart.find(item => item.id === selectedProduct.id && item.size === selectedSize);
         
+        const isTargetedByPromo = activePromoCode && activePromoCode.product_id && String(activePromoCode.product_id).toLowerCase() === String(selectedProduct.id).toLowerCase();
+
+        if (isTargetedByPromo && existing && existing.quantity >= 1) {
+          showToast("Este código promocional solo te permite comprar 1 sola jersey.");
+          return;
+        }
+
         const finalPrice = (selectedProduct.discount_price && parseFloat(selectedProduct.discount_price) > 0) 
           ? parseFloat(selectedProduct.discount_price) 
           : parseFloat(selectedProduct.price);
@@ -2119,13 +2520,49 @@
 
       function updateCartUI() {
         cartItems.innerHTML = '';
-        let total = 0;
+        let subtotal = 0;
         let count = 0;
+        let calculatedDiscount = 0;
+
+        cart.forEach((item) => {
+          const itemSubtotal = item.price * item.quantity;
+          subtotal += itemSubtotal;
+          count += item.quantity;
+        });
+
+        if (activePromoCode && cart.length > 0) {
+          const { discType, discValue } = getPromoDiscountValues(activePromoCode);
+
+          if (activePromoCode.product_id) {
+            const targetProductId = String(activePromoCode.product_id).toLowerCase();
+            const targetItem = cart.find(i => String(i.id).toLowerCase() === targetProductId);
+            
+            if (targetItem) {
+              const singleItemPrice = targetItem.price;
+              if (discType === 'percentage') {
+                calculatedDiscount = (singleItemPrice * (discValue / 100));
+              } else {
+                calculatedDiscount = Math.min(singleItemPrice, discValue);
+              }
+            } else {
+              showToast("El código aplica a un ítem que no está en tu carrito.");
+            }
+          } else {
+            const firstItemPrice = cart[0].price;
+            if (discType === 'percentage') {
+              calculatedDiscount = (firstItemPrice * (discValue / 100));
+            } else {
+              calculatedDiscount = Math.min(subtotal, discValue);
+            }
+          }
+        }
+
+        const finalTotal = Math.max(0, subtotal - calculatedDiscount);
 
         cart.forEach((item, index) => {
-          total += item.price * item.quantity;
-          count += item.quantity;
-
+          const isTargetedByPromoProduct = activePromoCode && activePromoCode.product_id && String(activePromoCode.product_id).toLowerCase() === String(item.id).toLowerCase();
+          const isFirstItemGeneralPromo = activePromoCode && !activePromoCode.product_id && index === 0;
+          
           const el = document.createElement('div');
           el.className = 'cart-item';
           el.innerHTML = `
@@ -2135,6 +2572,7 @@
             <div class="cart-item-info">
               <strong>${item.name}</strong>
               <small>Talla: ${item.size} • $${item.price}</small>
+              ${(isTargetedByPromoProduct || isFirstItemGeneralPromo) ? `<span class="item-discount-badge">¡Cupón Aplicado (1 jersey)!</span>` : ''}
             </div>
             <div class="cart-item-actions">
               <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
@@ -2151,14 +2589,30 @@
           cartItems.appendChild(el);
         });
 
-        cartTotal.textContent = `$${total}`;
+        cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
+        
+        if (calculatedDiscount > 0) {
+          discountRow.style.display = 'flex';
+          cartDiscount.textContent = `-$${calculatedDiscount.toFixed(2)}`;
+        } else {
+          discountRow.style.display = 'none';
+        }
+
+        cartTotal.textContent = `$${finalTotal.toFixed(2)}`;
         cartCount.textContent = count;
       }
 
       window.changeQty = function(index, delta) {
         const item = cart[index];
-        const originalProduct = products.find(p => p.id === item.id);
-        const maxStock = originalProduct ? originalProduct.stock[item.size] : 99;
+        const originalProduct = products.find(p => String(p.id).toLowerCase() === String(item.id).toLowerCase());
+        const maxStock = (originalProduct && originalProduct.stock && originalProduct.stock[item.size]) ? originalProduct.stock[item.size] : 99;
+
+        const isTargetedByPromo = activePromoCode && activePromoCode.product_id && String(activePromoCode.product_id).toLowerCase() === String(item.id).toLowerCase();
+
+        if (delta > 0 && isTargetedByPromo && item.quantity >= 1) {
+          showToast("Este código promocional solo te permite comprar 1 sola jersey.");
+          return;
+        }
 
         item.quantity += delta;
         
@@ -2180,19 +2634,54 @@
         showToast("Carrito vaciado.");
       });
 
-      instagramOrderBtn.addEventListener('click', () => {
+      instagramOrderBtn.addEventListener('click', async () => {
         if (cart.length === 0) {
           showToast("El carrito está vacío.");
           return;
         }
 
+        let subtotal = 0;
+        let calculatedDiscount = 0;
         let msg = `¡Hola! Me gustaría hacer un pedido de Retrokits:\n\n`;
-        let total = 0;
+
         cart.forEach((item) => {
-          msg += `• ${item.quantity}x ${item.name} [Talla ${item.size}] ($${item.price * item.quantity})\n`;
-          total += item.price * item.quantity;
+          const itemSub = item.price * item.quantity;
+          subtotal += itemSub;
+          msg += `• ${item.quantity}x ${item.name} [Talla ${item.size}] ($${itemSub})\n`;
         });
-        msg += `\n*Total a pagar: $${total}*`;
+
+        if (activePromoCode) {
+          const { discType, discValue } = getPromoDiscountValues(activePromoCode);
+
+          if (activePromoCode.product_id) {
+            const targetProductId = String(activePromoCode.product_id).toLowerCase();
+            const targetItem = cart.find(i => String(i.id).toLowerCase() === targetProductId);
+            
+            if (targetItem) {
+              const singleItemPrice = targetItem.price;
+              if (discType === 'percentage') {
+                calculatedDiscount = (singleItemPrice * (discValue / 100));
+              } else {
+                calculatedDiscount = Math.min(singleItemPrice, discValue);
+              }
+            }
+          } else {
+            const firstItemPrice = cart[0].price;
+            if (discType === 'percentage') {
+              calculatedDiscount = (firstItemPrice * (discValue / 100));
+            } else {
+              calculatedDiscount = Math.min(subtotal, discValue);
+            }
+          }
+        }
+
+        const total = Math.max(0, subtotal - calculatedDiscount);
+
+        if (activePromoCode && calculatedDiscount > 0) {
+          msg += `\n*Código de Descuento (${activePromoCode.code}): -$${calculatedDiscount.toFixed(2)}*`;
+        }
+
+        msg += `\n*Total a pagar: $${total.toFixed(2)}*`;
 
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(msg)
@@ -2246,13 +2735,16 @@
           .trim();
 
         if (cleanQuery.length > 0) {
-          document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-          const dynamicAllBtn = document.querySelector('.category-btn[data-category="Todas"]');
-          if (dynamicAllBtn) dynamicAllBtn.classList.add('active');
+          categorySelect.value = 'Todas';
         }
 
         if (cleanQuery === '') {
-          renderProducts(products);
+          const cat = categorySelect.value;
+          if (cat === 'Todas') {
+            renderProducts(products);
+          } else {
+            renderProducts(products.filter(p => p.category === cat));
+          }
           return;
         }
 
@@ -2280,21 +2772,15 @@
       searchSubmit.addEventListener('click', handleSearch);
       searchInput.addEventListener('input', handleSearch);
 
-      document.querySelectorAll('.category-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-          e.target.classList.add('active');
-          
-          searchInput.value = '';
-
-          const cat = e.target.dataset.category;
-          if (cat === 'Todas') {
-            renderProducts(products);
-          } else {
-            const filtered = products.filter(p => p.category === cat);
-            renderProducts(filtered);
-          }
-        });
+      categorySelect.addEventListener('change', (e) => {
+        searchInput.value = '';
+        const cat = e.target.value;
+        if (cat === 'Todas') {
+          renderProducts(products);
+        } else {
+          const filtered = products.filter(p => p.category === cat);
+          renderProducts(filtered);
+        }
       });
 
       closeModalBtn.addEventListener('click', closeModal);
@@ -2309,7 +2795,7 @@
         setTimeout(() => toast.remove(), 3500);
       }
 
-      loadPromoFromWarmSupabase = async () => {
+      const loadPromoFromWarmSupabase = async () => {
         await loadPromoFromSupabase();
       };
       
